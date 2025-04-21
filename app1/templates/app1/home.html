@@ -1,0 +1,36 @@
+{% extends 'app1/base.html' %}
+
+{% block title %}Inicio - Blog Personal{% endblock %}
+
+{% block content %}
+<div class="jumbotron p-5 mb-4 bg-light rounded-3">
+    <div class="container">
+        <h1 class="display-4">Bienvenido a mi Blog</h1>
+        <p class="lead">Un espacio para compartir ideas, conocimientos y experiencias.</p>
+        <hr class="my-4">
+        <a class="btn btn-primary btn-lg" href="{% url 'app1:lista_posts' %}" role="button">Ver artículos</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <h2 class="mb-4">Artículos recientes</h2>
+        <div class="row">
+            <!-- Aquí irían los posts recientes -->
+            <div class="col-12 text-center py-5">
+                <p class="text-muted">Aún no hay artículos publicados.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <h2 class="mb-4">Categorías</h2>
+        <div class="list-group mb-4">
+            <!-- Aquí irían las categorías -->
+            <div class="text-center py-3">
+                <p class="text-muted">No hay categorías disponibles.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

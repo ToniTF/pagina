@@ -1,0 +1,116 @@
+/* Estilos generales */
+body {
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+/* Estilos para las tarjetas de posts */
+.post-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.post-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+/* Estilos para los detalles del post */
+.post-header {
+    position: relative;
+    padding: 2rem;
+    background-size: cover;
+    background-position: center;
+    color: white;
+    border-radius: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.post-header-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    border-radius: 0.5rem;
+}
+
+.post-header-content {
+    position: relative;
+    z-index: 10;
+}
+
+.post-metadata {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 1rem;
+}
+
+.post-metadata span {
+    margin-right: 1rem;
+}
+
+.post-content {
+    font-size: 1.1rem;
+    line-height: 1.7;
+}
+
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    margin: 1rem 0;
+}
+
+/* Estilos para comentarios */
+.comentario {
+    border-left: 3px solid #007bff;
+    padding-left: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.comentario-autor {
+    font-weight: bold;
+    color: #495057;
+}
+
+.comentario-fecha {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+/* Estilos para formularios */
+.form-container {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* Paginación personalizada */
+.pagination .page-item.active .page-link {
+    background-color: #212529;
+    border-color: #212529;
+}
+
+.pagination .page-link {
+    color: #212529;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.animated-element {
+    animation: fadeIn 0.6s ease-in;
+}
+
+/* Footer */
+footer a:hover {
+    opacity: 0.8;
+    text-decoration: underline !important;
+}
