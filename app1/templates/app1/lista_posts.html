@@ -1,0 +1,74 @@
+<!-- filepath: c:\python\django\pagina\app1\templates\app1\lista_posts.html -->
+{% extends 'app1/base.html' %} <!-- Asume que tienes un base.html -->
+{% load static %}
+
+{% block title %}{{ titulo_pagina }}{% endblock %}
+
+{% block content %}
+<h1>{{ titulo_pagina }}</h1>
+
+<!-- Puedes añadir una sección para mostrar/filtrar por categorías si quieres -->
+<div>
+    <h3>Categorías</h3>
+    <ul>
+        <li><a href="{% url 'app1:lista_posts' %}">Todas</a></li>
+        {% for cat in categorias %}
+            <li>
+                <a href="{% url 'app1:lista_posts' %}?categoria={{ cat.slug }}" {% if cat.slug == categoria_actual %}style="font-weight: bold;"{% endif %}>
+                    {{ cat.nombre }} ({{ cat.num_posts }})
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+
+<hr>
+
+<!-- Lista de Posts -->
+<div>
+    {% if posts %}
+        {% for post in posts %}
+            <article>
+                <h2><a href="{{ post.get_absolute_url }}">{{ post.titulo }}</a></h2>
+                <p>Categoría: <a href="{% url 'app1:posts_por_categoria' post.categoria.slug %}">{{ post.categoria.nombre }}</a></p>
+                <p>Publicado el: {{ post.fecha_publicacion|date:"d M Y" }} por {{ post.autor.username }}</p>
+                <div>
+                    {{ post.contenido|truncatewords_html:50|safe }} {# Muestra un extracto, asumiendo que tienes un campo 'contenido' #}
+                </div>
+                <a href="{{ post.get_absolute_url }}">Leer más</a>
+            </article>
+            <hr>
+        {% endfor %}
+    {% else %}
+        <p>No hay artículos disponibles en esta categoría.</p>
+    {% endif %}
+</div>
+
+<!-- Paginación -->
+{% if posts.has_other_pages %}
+    <nav>
+        <ul class="pagination">
+            {% if posts.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ posts.previous_page_number }}{% if categoria_actual %}&categoria={{ categoria_actual }}{% endif %}">&laquo; Anterior</a></li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">&laquo; Anterior</span></li>
+            {% endif %}
+
+            {% for i in posts.paginator.page_range %}
+                {% if posts.number == i %}
+                    <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                {% else %}
+                    <li class="page-item"><a class="page-link" href="?page={{ i }}{% if categoria_actual %}&categoria={{ categoria_actual }}{% endif %}">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+
+            {% if posts.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ posts.next_page_number }}{% if categoria_actual %}&categoria={{ categoria_actual }}{% endif %}">Siguiente &raquo;</a></li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">Siguiente &raquo;</span></li>
+            {% endif %}
+        </ul>
+    </nav>
+{% endif %}
+
+{% endblock %}

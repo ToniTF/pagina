@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.db.models import Count
 from django.core.paginator import Paginator
 from .models import Post, Categoria, Comentario
-from .forms import PostForm, ComentarioForm, CategoriaForm
+from .forms import PostForm, ComentarioForm, CategoriaForm, UserRegisterForm
 
 def home(request):
     # Posts destacados para el carrusel
