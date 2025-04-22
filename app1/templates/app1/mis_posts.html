@@ -1,0 +1,70 @@
+{% extends "app1/base.html" %}
+{% block title %}Mis Artículos{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Mis Artículos</h1>
+        <a href="{% url 'app1:nuevo_post' %}" class="btn btn-success">
+            <i class="bi bi-plus-circle me-1"></i> Nuevo artículo
+        </a>
+    </div>
+
+    {% if posts %}
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Título</th>
+                    <th>Categoría</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for post in posts %}
+                <tr>
+                    <td>
+                        <a href="{% url 'app1:detalle_post' post.slug %}" class="text-decoration-none">
+                            {{ post.titulo }}
+                        </a>
+                    </td>
+                    <td>{{ post.categoria.nombre }}</td>
+                    <td>{{ post.fecha_publicacion|date:"d/m/Y" }}</td>
+                    <td>
+                        {% if post.publicado %}
+                        <span class="badge bg-success">Publicado</span>
+                        {% else %}
+                        <span class="badge bg-secondary">Borrador</span>
+                        {% endif %}
+                        
+                        {% if post.destacado %}
+                        <span class="badge bg-primary">Destacado</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'app1:editar_post' post.slug %}" class="btn btn-sm btn-outline-primary me-1">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="{% url 'app1:eliminar_post' post.slug %}" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info text-center py-5">
+        <i class="bi bi-journal-x display-4 d-block mb-3"></i>
+        <h4>Aún no has creado ningún artículo</h4>
+        <p class="mb-3">¡Es momento de compartir tus ideas con el mundo!</p>
+        <a href="{% url 'app1:nuevo_post' %}" class="btn btn-primary">
+            Crear mi primer artículo
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
