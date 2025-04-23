@@ -4,11 +4,17 @@ from django.contrib.auth.models import User
 from .models import Post, Comentario, Categoria
 
 class UserRegisterForm(UserCreationForm):
-    email = forms.EmailField()
+    email = forms.EmailField(required=True, help_text='Requerido. Introduce una dirección de correo válida.')
     
-    class Meta:
+    class Meta(UserCreationForm.Meta):
         model = User
-        fields = ['username', 'email', 'password1', 'password2']
+        fields = UserCreationForm.Meta.fields + ('email',)
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if email and User.objects.filter(email__iexact=email).exists():
+            raise forms.ValidationError("Ya existe una cuenta registrada con esta dirección de correo electrónico.")
+        return email
 
 class CategoriaForm(forms.ModelForm):
     class Meta:

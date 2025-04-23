@@ -149,3 +149,8 @@ CKEDITOR_CONFIGS = {
 # Configuración de Login/Logout
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+AUTHENTICATION_BACKENDS = [
+    'app1.backends.EmailBackend',  # Tu backend personalizado
+    'django.contrib.auth.backends.ModelBackend', # Manten el backend por defecto como fallback
+]
