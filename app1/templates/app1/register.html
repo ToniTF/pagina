@@ -1,24 +1,102 @@
 {% extends "app1/base.html" %}
 {% block title %}Registro{% endblock %}
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card shadow">
-            <div class="card-header bg-primary text-white">
+<div class="row justify-content-center my-5">
+     <div class="col-md-6 col-lg-5">
+        <div class="card shadow-lg">
+            <div class="card-header bg-primary text-white text-center">
                 <h3 class="mb-0">Registrarse</h3>
             </div>
-            <div class="card-body">
+            <div class="card-body p-4">
                 <form method="POST">
                     {% csrf_token %}
                     <fieldset class="form-group">
-                        <!-- Esto renderizará username, email, password1, password2 -->
-                        {{ form.as_p }} 
+                        
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger py-2">
+                                {% for error in form.non_field_errors %}
+                                    <p class="mb-0">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">{{ form.username.label }}</label>
+                            <input type="{{ form.username.field.widget.input_type }}" 
+                                   name="{{ form.username.name }}" 
+                                   id="{{ form.username.id_for_label }}" 
+                                   class="form-control {% if form.username.errors %}is-invalid{% endif %}" 
+                                   value="{{ form.username.value|default:'' }}" 
+                                   maxlength="{{ form.username.field.max_length }}" 
+                                   required>
+                            {% if form.username.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.username.errors %} {{ error }} {% endfor %}
+                                </div>
+                            {% endif %}
+                            {% if form.username.help_text %}
+                                <small class="form-text text-muted">{{ form.username.help_text|safe }}</small>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">{{ form.email.label }}</label>
+                            <input type="{{ form.email.field.widget.input_type }}" 
+                                   name="{{ form.email.name }}" 
+                                   id="{{ form.email.id_for_label }}" 
+                                   class="form-control {% if form.email.errors %}is-invalid{% endif %}" 
+                                   value="{{ form.email.value|default:'' }}" 
+                                   required>
+                            {% if form.email.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.email.errors %} {{ error }} {% endfor %}
+                                </div>
+                            {% endif %}
+                            {% if form.email.help_text %}
+                                <small class="form-text text-muted">{{ form.email.help_text|safe }}</small>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.password.id_for_label }}" class="form-label">{{ form.password.label }}</label>
+                            <input type="{{ form.password.field.widget.input_type }}" 
+                                   name="{{ form.password.name }}" 
+                                   id="{{ form.password.id_for_label }}" 
+                                   class="form-control {% if form.password.errors %}is-invalid{% endif %}" 
+                                   required>
+                            {% if form.password.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.password.errors %} {{ error }} {% endfor %}
+                                </div>
+                            {% endif %}
+                            {% if form.password.help_text %}
+                                <small class="form-text text-muted">{{ form.password.help_text|safe }}</small>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="{{ form.password2.id_for_label }}" class="form-label">{{ form.password2.label }}</label>
+                            <input type="{{ form.password2.field.widget.input_type }}" 
+                                   name="{{ form.password2.name }}" 
+                                   id="{{ form.password2.id_for_label }}" 
+                                   class="form-control {% if form.password2.errors %}is-invalid{% endif %}" 
+                                   required>
+                            {% if form.password2.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.password2.errors %} {{ error }} {% endfor %}
+                                </div>
+                            {% endif %}
+                            {% if form.password2.help_text %}
+                                <small class="form-text text-muted">{{ form.password2.help_text|safe }}</small>
+                            {% endif %}
+                        </div>
+
                     </fieldset>
-                    <div class="form-group mt-3">
+                    <div class="d-grid gap-2 mt-4">
                         <button class="btn btn-primary" type="submit">Registrarse</button>
                     </div>
                 </form>
-                <div class="border-top pt-3 mt-4">
+                <div class="border-top pt-3 mt-4 text-center">
                     <small class="text-muted">
                         ¿Ya tienes una cuenta? <a href="{% url 'login' %}">Iniciar sesión</a>
                     </small>

@@ -1,18 +1,20 @@
 {% extends "app1/base.html" %}
 {% block title %}Iniciar Sesión{% endblock %}
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card shadow">
-            <div class="card-header bg-primary text-white">
+<!-- Añadido my-5 para margen vertical -->
+<div class="row justify-content-center my-5">
+    <div class="col-md-6 col-lg-5"> {/* Ajustado col-lg-5 para pantallas grandes */}
+        <div class="card shadow-lg"> {/* Aumentada la sombra */}
+            <div class="card-header bg-primary text-white text-center"> {/* Centrado el texto */}
                 <h3 class="mb-0">Iniciar Sesión</h3>
             </div>
-            <div class="card-body">
+            <!-- Añadido p-4 para padding interno -->
+            <div class="card-body p-4">
                 <form method="post" action="">
-                    {% csrf_token %}  <!-- ¡ASEGÚRATE DE QUE ESTÉ AQUÍ! -->
+                    {% csrf_token %}
                     <fieldset class="form-group">
                         {% if form.non_field_errors %}
-                            <div class="alert alert-danger">
+                            <div class="alert alert-danger py-2"> {/* Reducido padding vertical del error */}
                                 {% for error in form.non_field_errors %}
                                     {{ error }}
                                 {% endfor %}
@@ -24,31 +26,28 @@
                             <input type="text" name="{{ form.username.name }}" id="{{ form.username.id_for_label }}" class="form-control {% if form.username.errors %}is-invalid{% endif %}" value="{{ form.username.value|default:'' }}">
                             {% if form.username.errors %}
                                 <div class="invalid-feedback">
-                                    {% for error in form.username.errors %}
-                                        {{ error }}
-                                    {% endfor %}
+                                    {% for error in form.username.errors %} {{ error }} {% endfor %}
                                 </div>
                             {% endif %}
                         </div>
 
-                        <div class="mb-3">
+                        <div class="mb-4"> {/* Aumentado margen inferior */}
                             <label for="{{ form.password.id_for_label }}" class="form-label">Contraseña</label>
                             <input type="password" name="{{ form.password.name }}" id="{{ form.password.id_for_label }}" class="form-control {% if form.password.errors %}is-invalid{% endif %}">
                             {% if form.password.errors %}
                                 <div class="invalid-feedback">
-                                    {% for error in form.password.errors %}
-                                        {{ error }}
-                                    {% endfor %}
+                                    {% for error in form.password.errors %} {{ error }} {% endfor %}
                                 </div>
                             {% endif %}
                         </div>
                     </fieldset>
-                    <div class="form-group mt-3">
-                        <button class="btn btn-primary" type="submit">Iniciar Sesión</button>
-                        <a href="{% url 'password_reset' %}" class="float-end">¿Olvidaste tu contraseña?</a>
+                    <!-- Usando Flexbox para alinear botón y enlace -->
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <button class="btn btn-primary px-4" type="submit">Iniciar Sesión</button> {/* Añadido padding horizontal */}
+                        <a href="{% url 'password_reset' %}" class="small">¿Olvidaste tu contraseña?</a>
                     </div>
                 </form>
-                <div class="border-top pt-3 mt-4">
+                <div class="border-top pt-3 mt-4 text-center"> {/* Centrado el texto inferior */}
                     <small class="text-muted">
                         ¿No tienes una cuenta? <a href="{% url 'register' %}">Registrarse</a>
                     </small>
