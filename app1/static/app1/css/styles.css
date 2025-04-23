@@ -22,7 +22,6 @@ body {
     padding: 2rem;
     background-size: cover;
     background-position: center;
-    color: white;
     border-radius: 0.5rem;
     margin-bottom: 2rem;
 }
@@ -55,6 +54,18 @@ body {
 .post-content {
     font-size: 1.1rem;
     line-height: 1.7;
+    color: #333; /* Color base para párrafos dentro del contenido */
+}
+
+.post-content h1,
+.post-content h2,
+.post-content h3,
+.post-content h4,
+.post-content h5,
+.post-content h6 {
+    color: #000; /* Negro puro para encabezados dentro del contenido */
+    margin-top: 1.5em;
+    margin-bottom: 0.8em;
 }
 
 .post-content img {
@@ -62,6 +73,12 @@ body {
     height: auto;
     border-radius: 0.5rem;
     margin: 1rem 0;
+}
+
+/* Añadir regla para el texto del extracto (clase .lead) */
+.blog-post .lead { /* Más específico: .lead dentro de .blog-post */
+    color: #000; /* Negro puro para el extracto */
+    font-size: 1.2rem; /* Ajusta el tamaño si es necesario */
 }
 
 /* Estilos para comentarios */

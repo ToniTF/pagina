@@ -1,111 +1,155 @@
 {% extends 'app1/base.html' %}
 {% load static %}
 
-{% block title %}Inicio - Blog Personal{% endblock %}
+{% block title %}Inicio - BlogWorld{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
-    {# Sección Jumbotron Modificada - Eliminado margen inferior #}
-    <div class="p-5 mb-0 bg-light rounded-3 text-center"> {# Cambiado mb-3 a mb-0 #}
+    {# Sección Jumbotron #}
+    <div class="p-5 mb-4 bg-light rounded-3 text-center"> {# Restaurado mb-4 para espacio #}
         <div class="container-fluid py-5">
             <h1 class="display-5 fw-bold">Bienvenido a BlogWorld</h1>
             <p class="fs-4">Un espacio para compartir ideas, conocimientos y experiencias.</p>
         </div>
     </div>
 
+    {# --- INICIO CARRUSEL POSTS DESTACADOS --- #}
+    {% if posts_destacados %}
+    <div id="featuredPostsCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            {% for post in posts_destacados %}
+            <button type="button" data-bs-target="#featuredPostsCarousel" data-bs-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}" aria-current="{% if forloop.first %}true{% endif %}" aria-label="Slide {{ forloop.counter }}"></button>
+            {% endfor %}
+        </div>
+        <div class="carousel-inner rounded">
+            {% for post in posts_destacados %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                {% if post.imagen_destacada %}
+                <img src="{{ post.imagen_destacada.url }}" class="d-block w-100" alt="{{ post.titulo }}" style="height: 400px; object-fit: cover;">
+                {% else %}
+                <div class="d-block w-100 bg-secondary" style="height: 400px;"></div> {# Placeholder si no hay imagen #}
+                {% endif %}
+                <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 p-3 rounded">
+                    <h5><a href="{% url 'app1:detalle_post' post.slug %}" class="text-white text-decoration-none">{{ post.titulo }}</a></h5>
+                    <p>{{ post.extracto|truncatechars:100 }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#featuredPostsCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#featuredPostsCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+    {% endif %}
+    {# --- FIN CARRUSEL POSTS DESTACADOS --- #}
+
+
     {# --- INICIO CINTA DE NOTICIAS --- #}
     {% if noticias_rss %}
-    <div class="news-ticker-container my-3"> {# my-3 añade margen vertical #}
+    <div class="news-ticker-container my-4"> {# Ajustado margen #}
         <div class="news-ticker-content">
             {# Repetimos el contenido para un bucle más suave con CSS puro #}
             {% for item in noticias_rss %}
-                <span class="news-item mx-3"> {# mx-3 añade margen horizontal #}
-                    <span class="badge bg-secondary me-1">{{ item.source }}</span> {# Etiqueta para la fuente #}
-                    <a href="{{ item.link }}" target="_blank" rel="noopener noreferrer" class="text-white text-decoration-none">
-                        {{ item.title }}
-                    </a>
-                </span>
-            {% endfor %}
-            {# Segunda copia para el bucle #}
-            {% for item in noticias_rss %}
-                 <span class="news-item mx-3">
+                <span class="news-item mx-3">
                     <span class="badge bg-secondary me-1">{{ item.source }}</span>
                     <a href="{{ item.link }}" target="_blank" rel="noopener noreferrer" class="text-white text-decoration-none">
                         {{ item.title }}
                     </a>
                 </span>
             {% endfor %}
-            {# Tercera copia para el bucle #}
-            {% for item in noticias_rss %}
-                 <span class="news-item mx-3">
-                    <span class="badge bg-secondary me-1">{{ item.source }}</span>
-                    <a href="{{ item.link }}" target="_blank" rel="noopener noreferrer" class="text-white text-decoration-none">
-                        {{ item.title }}
-                    </a>
-                </span>
-            {% endfor %}
-            {# Cuarta copia para el bucle #}
-            {% for item in noticias_rss %}
-                 <span class="news-item mx-3">
-                    <span class="badge bg-secondary me-1">{{ item.source }}</span>
-                    <a href="{{ item.link }}" target="_blank" rel="noopener noreferrer" class="text-white text-decoration-none">
-                        {{ item.title }}
-                    </a>
-                </span>
-            {% endfor %}
+            {# Segunda copia #}
+             {% for item in noticias_rss %} <span class="news-item mx-3"><span class="badge bg-secondary me-1">{{ item.source }}</span><a href="{{ item.link }}" target="_blank" rel="noopener noreferrer" class="text-white text-decoration-none">{{ item.title }}</a></span> {% endfor %}
+             {# Tercera copia #}
+             {% for item in noticias_rss %} <span class="news-item mx-3"><span class="badge bg-secondary me-1">{{ item.source }}</span><a href="{{ item.link }}" target="_blank" rel="noopener noreferrer" class="text-white text-decoration-none">{{ item.title }}</a></span> {% endfor %}
+             {# Cuarta copia #}
+             {% for item in noticias_rss %} <span class="news-item mx-3"><span class="badge bg-secondary me-1">{{ item.source }}</span><a href="{{ item.link }}" target="_blank" rel="noopener noreferrer" class="text-white text-decoration-none">{{ item.title }}</a></span> {% endfor %}
         </div>
     </div>
     {% endif %}
     {# --- FIN CINTA DE NOTICIAS --- #}
 
-    <div class="row"> {# Este div no tenía margen superior, así que el espacio venía del Jumbotron #}
-        {# Columna Principal - Noticias Externas #}
+    {# --- INICIO SECCIÓN PRINCIPAL (POSTS RECIENTES Y CATEGORÍAS) --- #}
+    <div class="row g-5"> {# g-5 añade espacio entre columnas #}
+        {# Columna Principal - Posts Recientes #}
         <div class="col-md-8">
-            <h2 class="mb-4">Noticias Externas</h2>
-            {% if noticias_rss %}
-                <ul class="list-group list-group-flush">
-                    {% for item in noticias_rss %}
-                        {# Usa flexbox para alinear imagen y texto #}
-                        <li class="list-group-item d-flex align-items-start py-3">
-                            {# Muestra la imagen si existe #}
-                            {% if item.image %}
-                                <img src="{{ item.image }}" alt="Imagen para {{ item.title }}" class="me-3 rounded" style="width: 100px; height: 75px; object-fit: cover;">
-                            {% else %}
-                                {# Espacio reservado o icono si no hay imagen (opcional) #}
-                                <div class="me-3" style="width: 100px; height: 75px; background-color: #e9ecef; display: flex; align-items: center; justify-content: center; color: #6c757d; font-size: 0.8rem;">
-                                    <small>Sin imagen</small>
-                                </div>
-                            {% endif %}
-                            {# Contenedor para el título y la fuente #}
-                            <div>
-                                <a href="{{ item.link }}" target="_blank" rel="noopener noreferrer" class="fw-bold text-decoration-none">{{ item.title }}</a>
-                                <small class="text-muted d-block mt-1">Fuente: {{ item.source }}</small>
-                            </div>
-                        </li>
-                    {% endfor %}
-                </ul>
+            <h2 class="pb-4 mb-4 fst-italic border-bottom">
+                Últimos Artículos
+            </h2>
+
+            {% if posts_recientes %}
+                {% for post in posts_recientes %}
+                <article class="blog-post mb-4">
+                    <h3 class="blog-post-title"><a href="{% url 'app1:detalle_post' post.slug %}" class="text-decoration-none">{{ post.titulo }}</a></h3>
+                    <p class="blog-post-meta">{{ post.fecha_publicacion|date:"d F, Y" }} por <a href="#">{{ post.autor.username }}</a> en <a href="{% url 'app1:posts_por_categoria' post.categoria.slug %}">{{ post.categoria.nombre }}</a></p>
+                    {% if post.imagen_destacada %}
+                        <img src="{{ post.imagen_destacada.url }}" class="img-fluid rounded mb-3" alt="{{ post.titulo }}" style="max-height: 300px; width: 100%; object-fit: cover;">
+                    {% endif %}
+                    <p>{{ post.extracto }}</p>
+                    <a href="{% url 'app1:detalle_post' post.slug %}" class="btn btn-outline-primary btn-sm">Leer más</a>
+                </article>
+                <hr class="my-4">
+                {% endfor %}
             {% else %}
-                <p class="text-muted">No se pudieron cargar noticias externas en este momento.</p>
+                <p>Aún no hay artículos publicados.</p>
             {% endif %}
+
+             {# Puedes añadir paginación aquí si conviertes esta sección en una lista completa #}
+
         </div>
 
-        {# Columna Lateral para Categorías #}
+        {# Columna Lateral para Categorías y Noticias Externas #}
         <div class="col-md-4">
             <div class="position-sticky" style="top: 2rem;">
+                {# Categorías #}
                 <div class="p-4 mb-3 bg-light rounded">
-                    <h4 class="fst-italic">Categorías del Blog</h4>
+                    <h4 class="fst-italic">Categorías</h4>
                     {% if categorias %}
                         <ul class="list-unstyled mb-0">
                             {% for cat in categorias %}
                                 <li><a href="{% url 'app1:posts_por_categoria' cat.slug %}">{{ cat.nombre }} ({{ cat.num_posts }})</a></li>
                             {% endfor %}
+                             <li><hr class="dropdown-divider"></li>
+                             <li><a href="{% url 'app1:lista_posts' %}">Ver todos los artículos...</a></li>
                         </ul>
                     {% else %}
-                        <p class="text-muted">No hay categorías disponibles.</p>
+                        <p class="text-muted">No hay categorías.</p>
                     {% endif %}
+                </div>
+
+                {# Noticias Externas (Movidas a la barra lateral) #}
+                 <div class="p-4">
+                    <h4 class="fst-italic">Noticias Externas</h4>
+                     {% if noticias_rss %}
+                        <ul class="list-unstyled">
+                             {% for item in noticias_rss|slice:":5" %} {# Mostrar solo unas pocas aquí #}
+                                <li>
+                                    <a href="{{ item.link }}" target="_blank" rel="noopener noreferrer" class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top">
+                                        {% if item.image %}
+                                            <img src="{{ item.image }}" alt="" width="100" height="75" class="bd-placeholder-img rounded" style="object-fit: cover;">
+                                        {% else %}
+                                             <svg class="bd-placeholder-img rounded" width="100" height="75" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#eee"></rect><text x="50%" y="50%" fill="#aaa" dy=".3em" text-anchor="middle" font-size="0.8rem">Imagen</text></svg>
+                                        {% endif %}
+                                        <div class="col-lg-8">
+                                            <h6 class="mb-0">{{ item.title|truncatechars:60 }}</h6>
+                                            <small class="text-body-secondary">{{ item.source }}</small>
+                                        </div>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                     {% else %}
+                        <p class="text-muted">No hay noticias externas.</p>
+                     {% endif %}
                 </div>
             </div>
         </div>
     </div>
+    {# --- FIN SECCIÓN PRINCIPAL --- #}
+
 </div>
 {% endblock %}

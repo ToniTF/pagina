@@ -10,25 +10,12 @@ import logging  # Para registrar errores si un feed falla
 
 logger = logging.getLogger(__name__)
 
-# Lista de URLs de feeds RSS (Whitelist compatible)
+# Lista de URLs de feeds RSS (Solo los que funcionan en Free Tier)
 RSS_FEEDS = {
-    # --- En Español (Whitelist) ---
-    'BBC Mundo': 'https://feeds.bbci.co.uk/mundo/rss.xml',
-    'Google News (ES)': 'https://news.google.com/rss?hl=es&gl=ES&ceid=ES:es', # A menudo sin imágenes
-    'DW Español': 'https://rss.dw.com/rdf/rss-sp-all', # Deutsche Welle en Español
-    'Euronews Español': 'https://es.euronews.com/rss',
-    'France 24 Español': 'https://www.france24.com/es/rss',
-    'Reddit Noticias': 'https://www.reddit.com/r/noticias/.rss', # Imágenes dependen del post
-
-    # --- En Inglés (Whitelist) ---
-    'Reuters World': 'https://feeds.reuters.com/Reuters/worldNews',
-    'AP Top News': 'https://apnews.com/hub/ap-top-news/rss', # Associated Press
-    # 'BBC World': 'https://feeds.bbci.co.uk/news/world/rss.xml', # Ya tenemos BBC Mundo
-    # 'Yahoo News': 'https://www.yahoo.com/news/rss',
-    # --- Fuentes Tech (Whitelist, Inglés) ---
-    # 'TechCrunch': 'https://techcrunch.com/feed/',
-    # 'Wired': 'https://www.wired.com/feed/rss',
-    # 'The Verge': 'https://www.theverge.com/rss/index.xml',
+    'Yahoo News': 'https://news.yahoo.com/rss/',
+    'Google News (ES)': 'https://news.google.com/rss?hl=es&gl=ES&ceid=ES:es',
+    'Bing News (World)': 'https://www.bing.com/news/search?q=world&format=rss',
+    'MSN News (via Bing)': 'https://www.bing.com/news/search?q=site:msn.com&format=rss',
 }
 MAX_NEWS_ITEMS_PER_FEED = 3
 

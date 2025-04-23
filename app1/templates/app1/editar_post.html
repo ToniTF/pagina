@@ -1,82 +1,147 @@
 {% extends "app1/base.html" %}
+{% load static %} {# Asegúrate de cargar static si usas widgets personalizados que lo necesiten #}
+
 {% block title %}{% if post %}Editar artículo{% else %}Nuevo artículo{% endif %}{% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container my-5">
     <div class="row justify-content-center">
-        <div class="col-lg-10">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
+        <div class="col-lg-8"> {# Ajusta el ancho de la columna si es necesario #}
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white text-center">
                     <h3 class="mb-0">{% if post %}Editar artículo{% else %}Crear nuevo artículo{% endif %}</h3>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-4">
                     <form method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
-                        
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger py-2">
+                                {% for error in form.non_field_errors %}
+                                    <p class="mb-0">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
                         <div class="mb-3">
-                            <label for="{{ form.titulo.id_for_label }}" class="form-label">Título</label>
-                            {{ form.titulo }}
+                            <label for="{{ form.titulo.id_for_label }}" class="form-label">{{ form.titulo.label }}</label>
+                            <input type="{{ form.titulo.field.widget.input_type }}"
+                                   name="{{ form.titulo.name }}"
+                                   id="{{ form.titulo.id_for_label }}"
+                                   class="form-control {% if form.titulo.errors %}is-invalid{% endif %}"
+                                   value="{{ form.titulo.value|default:'' }}"
+                                   maxlength="{{ form.titulo.field.max_length }}"
+                                   required>
                             {% if form.titulo.errors %}
-                            <div class="text-danger">{{ form.titulo.errors }}</div>
+                                <div class="invalid-feedback">
+                                    {% for error in form.titulo.errors %} {{ error }} {% endfor %}
+                                </div>
                             {% endif %}
                         </div>
-                        
+
                         <div class="mb-3">
-                            <label for="{{ form.categoria.id_for_label }}" class="form-label">Categoría</label>
-                            {{ form.categoria }}
+                            <label for="{{ form.categoria.id_for_label }}" class="form-label">{{ form.categoria.label }}</label>
+                            {{ form.categoria }} {# El widget Select ya suele tener la clase form-select con django-bootstrap #}
                             {% if form.categoria.errors %}
-                            <div class="text-danger">{{ form.categoria.errors }}</div>
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.categoria.errors %} {{ error }} {% endfor %}
+                                </div>
                             {% endif %}
                         </div>
-                        
+
                         <div class="mb-3">
-                            <label for="{{ form.extracto.id_for_label }}" class="form-label">Extracto (opcional)</label>
-                            {{ form.extracto }}
-                            <div class="form-text">Breve descripción que aparecerá en las listas de artículos</div>
+                            <label for="{{ form.extracto.id_for_label }}" class="form-label">{{ form.extracto.label }}</label>
+                            <textarea name="{{ form.extracto.name }}"
+                                      id="{{ form.extracto.id_for_label }}"
+                                      class="form-control {% if form.extracto.errors %}is-invalid{% endif %}"
+                                      rows="3">{{ form.extracto.value|default:'' }}</textarea>
+                            {% if form.extracto.help_text %}
+                                <div class="form-text">{{ form.extracto.help_text|safe }}</div>
+                            {% endif %}
                             {% if form.extracto.errors %}
-                            <div class="text-danger">{{ form.extracto.errors }}</div>
+                                <div class="invalid-feedback">
+                                    {% for error in form.extracto.errors %} {{ error }} {% endfor %}
+                                </div>
                             {% endif %}
                         </div>
-                        
+
                         <div class="mb-3">
-                            <label for="{{ form.contenido.id_for_label }}" class="form-label">Contenido</label>
+                            <label for="{{ form.contenido.id_for_label }}" class="form-label">{{ form.contenido.label }}</label>
+                             {# Asume que el widget de contenido ya tiene las clases necesarias o usa un widget específico #}
                             {{ form.contenido }}
-                            {% if form.contenido.errors %}
-                            <div class="text-danger">{{ form.contenido.errors }}</div>
+                             {% if form.contenido.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.contenido.errors %} {{ error }} {% endfor %}
+                                </div>
                             {% endif %}
                         </div>
-                        
+
                         <div class="mb-3">
-                            <label for="{{ form.imagen_destacada.id_for_label }}" class="form-label">Imagen destacada</label>
-                            {{ form.imagen_destacada }}
+                            <label for="{{ form.imagen_destacada.id_for_label }}" class="form-label">{{ form.imagen_destacada.label }}</label>
+                            <input type="{{ form.imagen_destacada.field.widget.input_type }}"
+                                   name="{{ form.imagen_destacada.name }}"
+                                   id="{{ form.imagen_destacada.id_for_label }}"
+                                   class="form-control {% if form.imagen_destacada.errors %}is-invalid{% endif %}">
                             {% if form.imagen_destacada.errors %}
-                            <div class="text-danger">{{ form.imagen_destacada.errors }}</div>
+                                <div class="invalid-feedback">
+                                    {% for error in form.imagen_destacada.errors %} {{ error }} {% endfor %}
+                                </div>
                             {% endif %}
                             {% if post.imagen_destacada %}
                             <div class="mt-2">
-                                <p>Imagen actual:</p>
-                                <img src="{{ post.imagen_destacada.url }}" alt="{{ post.titulo }}" style="max-width: 200px; max-height: 150px;">
+                                <small>Imagen actual: <a href="{{ post.imagen_destacada.url }}" target="_blank">{{ post.imagen_destacada.name|cut:"post_images/" }}</a></small>
+                                <img src="{{ post.imagen_destacada.url }}" alt="{{ post.titulo }}" class="img-thumbnail mt-1" style="max-width: 150px; max-height: 100px;">
+                                <div class="form-check mt-1">
+                                     {# Añadir checkbox para borrar imagen si usas ClearableFileInput #}
+                                     {% if form.imagen_destacada.field.widget.template_name == 'django/forms/widgets/clearable_file_input.html' %}
+                                        {{ form.imagen_destacada_clear }}
+                                        <label for="{{ form.imagen_destacada_clear.id_for_label }}">Borrar imagen actual</label>
+                                     {% endif %}
+                                </div>
                             </div>
                             {% endif %}
                         </div>
-                        
-                        <div class="mb-3 form-check">
-                            {{ form.publicado }}
+
+                        <div class="mb-3 form-check form-switch"> {# Usar form-switch para un look más moderno #}
+                            <input type="checkbox"
+                                   name="{{ form.publicado.name }}"
+                                   id="{{ form.publicado.id_for_label }}"
+                                   class="form-check-input"
+                                   {% if form.publicado.value %}checked{% endif %}>
                             <label class="form-check-label" for="{{ form.publicado.id_for_label }}">
-                                Publicar artículo
+                                {{ form.publicado.label }}
                             </label>
+                            {% if form.publicado.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.publicado.errors %} {{ error }} {% endfor %}
+                                </div>
+                            {% endif %}
                         </div>
-                        
-                        <div class="mb-3 form-check">
-                            {{ form.destacado }}
+
+                        <div class="mb-4 form-check form-switch"> {# Usar form-switch #}
+                             <input type="checkbox"
+                                   name="{{ form.destacado.name }}"
+                                   id="{{ form.destacado.id_for_label }}"
+                                   class="form-check-input"
+                                   {% if form.destacado.value %}checked{% endif %}>
                             <label class="form-check-label" for="{{ form.destacado.id_for_label }}">
-                                Destacar artículo
+                                {{ form.destacado.label }}
                             </label>
+                             {% if form.destacado.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.destacado.errors %} {{ error }} {% endfor %}
+                                </div>
+                            {% endif %}
                         </div>
-                        
+
+                        <hr>
+
                         <div class="d-flex justify-content-between mt-4">
-                            <a href="{% url 'app1:home' %}" class="btn btn-secondary">Cancelar</a>
+                            <a href="{% if post %}{% url 'app1:detalle_post' post.slug %}{% else %}{% url 'app1:mis_posts' %}{% endif %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-circle me-1"></i>Cancelar
+                            </a>
                             <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle me-1"></i>
                                 {% if post %}Guardar cambios{% else %}Crear artículo{% endif %}
                             </button>
                         </div>
@@ -86,4 +151,8 @@
         </div>
     </div>
 </div>
+
+{# Si usas un editor de texto enriquecido como CKEditor, asegúrate de incluir su JS aquí #}
+{# Ejemplo: {{ form.media }} #}
+
 {% endblock %}
