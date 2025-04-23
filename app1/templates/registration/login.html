@@ -1,69 +1,91 @@
-<!-- filepath: c:\python\django\pagina\app1\templates\registration\login.html -->
 {% extends 'app1/base.html' %}
 
 {% block title %}Iniciar Sesión{% endblock %}
 
 {% block content %}
-  <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-md-6">
-        <h2>Iniciar Sesión</h2>
-        <hr>
+<div class="row justify-content-center my-5">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-lg">
+            <div class="card-header bg-primary text-white text-center">
+                <h3 class="mb-0">Iniciar Sesión</h3>
+            </div>
+            <div class="card-body p-4">
 
-        {% if form.errors %}
-          <div class="alert alert-danger">
-            Tu nombre de usuario y contraseña no coinciden. Por favor, inténtalo de nuevo.
-          </div>
-        {% endif %}
+                {% if form.non_field_errors %}
+                  <div class="alert alert-danger py-2">
+                      {% for error in form.non_field_errors %}
+                          <p class="mb-0">{{ error }}</p>
+                      {% endfor %}
+                  </div>
+                {% elif form.errors and not form.non_field_errors %}
+                  <div class="alert alert-danger py-2">
+                    Por favor, corrige los errores indicados abajo.
+                  </div>
+                {% endif %}
 
-        {% if next %}
-          {% if user.is_authenticated %}
-            <p class="alert alert-warning">Tu cuenta no tiene acceso a esta página. Para continuar,
-            por favor inicia sesión con una cuenta que tenga acceso.</p>
-          {% else %}
-            <p class="alert alert-info">Por favor, inicia sesión para ver esta página.</p>
-          {% endif %}
-        {% endif %}
+                {% if next %}
+                  {% if user.is_authenticated %}
+                    <p class="alert alert-warning py-2">Tu cuenta no tiene acceso a esta página. Para continuar,
+                    por favor inicia sesión con una cuenta que tenga acceso.</p>
+                  {% else %}
+                    <p class="alert alert-info py-2">Por favor, inicia sesión para ver esta página.</p>
+                  {% endif %}
+                {% endif %}
 
-        <form method="post" action="{% url 'login' %}">
-          {% csrf_token %}
+                <form method="post" action="{% url 'login' %}">
+                  {% csrf_token %}
+                  <fieldset class="form-group">
 
-          <div class="mb-3">
-             <label for="{{ form.username.id_for_label }}" class="form-label">{{ form.username.label }}</label>
-             {{ form.username }}
-             {% if form.username.errors %}
-                 <div class="invalid-feedback d-block">
-                     {% for error in form.username.errors %}
-                         {{ error }}
-                     {% endfor %}
-                 </div>
-             {% endif %}
-          </div>
+                      <div class="mb-3">
+                         {# --- Cambiar el texto de la etiqueta --- #}
+                         <label for="{{ form.username.id_for_label }}" class="form-label">Correo Electrónico</label> 
+                         {# ------------------------------------- #}
+                         <input type="text" 
+                                name="{{ form.username.name }}" 
+                                id="{{ form.username.id_for_label }}" 
+                                class="form-control {% if form.username.errors %}is-invalid{% endif %}" 
+                                value="{{ form.username.value|default:'' }}"
+                                required>
+                         {% if form.username.errors %}
+                             <div class="invalid-feedback">
+                                 {% for error in form.username.errors %}
+                                     {{ error }}
+                                 {% endfor %}
+                             </div>
+                         {% endif %}
+                      </div>
 
-          <div class="mb-3">
-            <label for="{{ form.password.id_for_label }}" class="form-label">{{ form.password.label }}</label>
-            {{ form.password }}
-            {% if form.password.errors %}
-                <div class="invalid-feedback d-block">
-                    {% for error in form.password.errors %}
-                        {{ error }}
-                    {% endfor %}
+                      <div class="mb-4">
+                        <label for="{{ form.password.id_for_label }}" class="form-label">{{ form.password.label }}</label>
+                        <input type="password" 
+                               name="{{ form.password.name }}" 
+                               id="{{ form.password.id_for_label }}" 
+                               class="form-control {% if form.password.errors %}is-invalid{% endif %}"
+                               required>
+                        {% if form.password.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.password.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                      </div>
+                  </fieldset>
+
+                  <div class="d-flex justify-content-between align-items-center mt-4">
+                      <button type="submit" class="btn btn-primary px-4">Iniciar Sesión</button>
+                      <a href="{% url 'password_reset' %}" class="small">¿Olvidaste tu contraseña?</a>
+                  </div>
+                  <input type="hidden" name="next" value="{{ next }}">
+                </form>
+
+                <div class="border-top pt-3 mt-4 text-center">
+                    <small class="text-muted">
+                        ¿No tienes cuenta? <a href="{% url 'register' %}">Regístrate aquí</a>
+                    </small>
                 </div>
-            {% endif %}
-          </div>
-
-          <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
-          <input type="hidden" name="next" value="{{ next }}">
-        </form>
-
-        {# Asume que tienes URLs para reseteo de contraseña y registro #}
-        <p class="mt-3">
-          <a href="{% url 'password_reset' %}">¿Olvidaste tu contraseña?</a>
-        </p>
-        <p>
-          ¿No tienes cuenta? <a href="{% url 'register' %}">Regístrate aquí</a> {# CAMBIO: Quitado 'app1:' #}
-        </p>
-      </div>
+            </div>
+        </div>
     </div>
-  </div>
+</div>
 {% endblock %}

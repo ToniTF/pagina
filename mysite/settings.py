@@ -151,6 +151,5 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 AUTHENTICATION_BACKENDS = [
-    'app1.backends.EmailBackend',  # Tu backend personalizado
-    'django.contrib.auth.backends.ModelBackend', # Manten el backend por defecto como fallback
+    'app1.backends.EmailBackend',  # Reemplaza 'app1' si tu app se llama diferente
 ]
