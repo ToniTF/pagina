@@ -1,11 +1,26 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
+from django.forms import PasswordInput
 from django.contrib.auth.models import User
 from .models import Post, Comentario, Categoria
 
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField(required=True, help_text='Requerido. Introduce una dirección de correo válida.')
     
+    password = forms.CharField(
+        label="Contraseña", 
+        strip=False,
+        widget=PasswordInput(attrs={"autocomplete": "new-password"}),
+        help_text=( 
+            "<ul>"
+            "<li>Su contraseña no puede ser demasiado similar a su otra información personal.</li>"
+            "<li>Su contraseña debe contener al menos 8 caracteres.</li>"
+            "<li>Su contraseña no puede ser una contraseña de uso común.</li>"
+            "<li>Su contraseña no puede ser completamente numérica.</li>"
+            "</ul>"
+        ),
+    )
+
     class Meta(UserCreationForm.Meta):
         model = User
         fields = UserCreationForm.Meta.fields + ('email',)
