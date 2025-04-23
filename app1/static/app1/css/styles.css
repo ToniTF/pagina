@@ -114,3 +114,56 @@ footer a:hover {
     opacity: 0.8;
     text-decoration: underline !important;
 }
+
+/* --- Estilos para la Cinta de Noticias (Ticker) --- */
+.news-ticker-container {
+  background-color: #dc3545; /* Rojo similar a canales de noticias */
+  color: #fff; /* Texto blanco por defecto para el contenedor */
+  padding: 8px 0; /* Padding vertical */
+  overflow: hidden; /* Oculta el contenido que se sale */
+  white-space: nowrap; /* Evita que el texto salte de línea */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra suave */
+}
+
+/* Asegura que los enlaces dentro del ticker sean blancos */
+.news-ticker-container a {
+    color: #fff !important; /* Fuerza el color blanco para los enlaces */
+    text-decoration: none; /* Quita el subrayado si lo hubiera */
+}
+.news-ticker-container a:hover {
+    text-decoration: underline; /* Subraya al pasar el ratón (opcional) */
+}
+
+.news-ticker-content {
+  display: inline-block; /* Necesario para la animación */
+  /* Aumenta MUCHO MÁS la duración (ej: 480s o más) */
+  animation: ticker-scroll 240s linear infinite;
+  /* padding-left: 0; */ /* Asegura que no haya padding inicial afectando la posición */
+}
+
+/* Pausar la animación al pasar el ratón por encima */
+.news-ticker-container:hover .news-ticker-content {
+  animation-play-state: paused;
+}
+
+.news-item {
+  display: inline-block; /* Mantiene los items en línea */
+}
+
+.news-item .badge { /* Estilo para la etiqueta de la fuente */
+    vertical-align: middle; /* Alinea mejor la etiqueta con el texto */
+    background-color: rgba(0, 0, 0, 0.2); /* Fondo semi-transparente para la etiqueta */
+}
+
+/* Definición de la animación de desplazamiento */
+@keyframes ticker-scroll {
+  0% {
+    /* Empieza con el contenido justo al inicio del contenedor */
+    transform: translateX(0%);
+  }
+  100% {
+    /* Se desplaza hacia la izquierda 1/4 de su anchura total
+       (porque repetimos el contenido 4 veces) */
+    transform: translateX(-25%);
+  }
+}

@@ -1,34 +1,109 @@
 {% extends 'app1/base.html' %}
+{% load static %}
 
 {% block title %}Inicio - Blog Personal{% endblock %}
 
 {% block content %}
-<div class="jumbotron p-5 mb-4 bg-light rounded-3">
-    <div class="container">
-        <h1 class="display-4">Bienvenido a mi Blog</h1>
-        <p class="lead">Un espacio para compartir ideas, conocimientos y experiencias.</p>
-        <hr class="my-4">
-        <a class="btn btn-primary btn-lg" href="{% url 'app1:lista_posts' %}" role="button">Ver artículos</a>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-8">
-        <h2 class="mb-4">Artículos recientes</h2>
-        <div class="row">
-            <!-- Aquí irían los posts recientes -->
-            <div class="col-12 text-center py-5">
-                <p class="text-muted">Aún no hay artículos publicados.</p>
-            </div>
+<div class="container mt-4">
+    {# Sección Jumbotron Modificada - Eliminado margen inferior #}
+    <div class="p-5 mb-0 bg-light rounded-3 text-center"> {# Cambiado mb-3 a mb-0 #}
+        <div class="container-fluid py-5">
+            <h1 class="display-5 fw-bold">Bienvenido a BlogWorld</h1>
+            <p class="fs-4">Un espacio para compartir ideas, conocimientos y experiencias.</p>
         </div>
     </div>
-    
-    <div class="col-md-4">
-        <h2 class="mb-4">Categorías</h2>
-        <div class="list-group mb-4">
-            <!-- Aquí irían las categorías -->
-            <div class="text-center py-3">
-                <p class="text-muted">No hay categorías disponibles.</p>
+
+    {# --- INICIO CINTA DE NOTICIAS --- #}
+    {% if noticias_rss %}
+    <div class="news-ticker-container my-3"> {# my-3 añade margen vertical #}
+        <div class="news-ticker-content">
+            {# Repetimos el contenido para un bucle más suave con CSS puro #}
+            {% for item in noticias_rss %}
+                <span class="news-item mx-3"> {# mx-3 añade margen horizontal #}
+                    <span class="badge bg-secondary me-1">{{ item.source }}</span> {# Etiqueta para la fuente #}
+                    <a href="{{ item.link }}" target="_blank" rel="noopener noreferrer" class="text-white text-decoration-none">
+                        {{ item.title }}
+                    </a>
+                </span>
+            {% endfor %}
+            {# Segunda copia para el bucle #}
+            {% for item in noticias_rss %}
+                 <span class="news-item mx-3">
+                    <span class="badge bg-secondary me-1">{{ item.source }}</span>
+                    <a href="{{ item.link }}" target="_blank" rel="noopener noreferrer" class="text-white text-decoration-none">
+                        {{ item.title }}
+                    </a>
+                </span>
+            {% endfor %}
+            {# Tercera copia para el bucle #}
+            {% for item in noticias_rss %}
+                 <span class="news-item mx-3">
+                    <span class="badge bg-secondary me-1">{{ item.source }}</span>
+                    <a href="{{ item.link }}" target="_blank" rel="noopener noreferrer" class="text-white text-decoration-none">
+                        {{ item.title }}
+                    </a>
+                </span>
+            {% endfor %}
+            {# Cuarta copia para el bucle #}
+            {% for item in noticias_rss %}
+                 <span class="news-item mx-3">
+                    <span class="badge bg-secondary me-1">{{ item.source }}</span>
+                    <a href="{{ item.link }}" target="_blank" rel="noopener noreferrer" class="text-white text-decoration-none">
+                        {{ item.title }}
+                    </a>
+                </span>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    {# --- FIN CINTA DE NOTICIAS --- #}
+
+    <div class="row"> {# Este div no tenía margen superior, así que el espacio venía del Jumbotron #}
+        {# Columna Principal - Noticias Externas #}
+        <div class="col-md-8">
+            <h2 class="mb-4">Noticias Externas</h2>
+            {% if noticias_rss %}
+                <ul class="list-group list-group-flush">
+                    {% for item in noticias_rss %}
+                        {# Usa flexbox para alinear imagen y texto #}
+                        <li class="list-group-item d-flex align-items-start py-3">
+                            {# Muestra la imagen si existe #}
+                            {% if item.image %}
+                                <img src="{{ item.image }}" alt="Imagen para {{ item.title }}" class="me-3 rounded" style="width: 100px; height: 75px; object-fit: cover;">
+                            {% else %}
+                                {# Espacio reservado o icono si no hay imagen (opcional) #}
+                                <div class="me-3" style="width: 100px; height: 75px; background-color: #e9ecef; display: flex; align-items: center; justify-content: center; color: #6c757d; font-size: 0.8rem;">
+                                    <small>Sin imagen</small>
+                                </div>
+                            {% endif %}
+                            {# Contenedor para el título y la fuente #}
+                            <div>
+                                <a href="{{ item.link }}" target="_blank" rel="noopener noreferrer" class="fw-bold text-decoration-none">{{ item.title }}</a>
+                                <small class="text-muted d-block mt-1">Fuente: {{ item.source }}</small>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted">No se pudieron cargar noticias externas en este momento.</p>
+            {% endif %}
+        </div>
+
+        {# Columna Lateral para Categorías #}
+        <div class="col-md-4">
+            <div class="position-sticky" style="top: 2rem;">
+                <div class="p-4 mb-3 bg-light rounded">
+                    <h4 class="fst-italic">Categorías del Blog</h4>
+                    {% if categorias %}
+                        <ul class="list-unstyled mb-0">
+                            {% for cat in categorias %}
+                                <li><a href="{% url 'app1:posts_por_categoria' cat.slug %}">{{ cat.nombre }} ({{ cat.num_posts }})</a></li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted">No hay categorías disponibles.</p>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
