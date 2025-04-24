@@ -7,7 +7,8 @@ from .models import Post, Comentario, Categoria
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField(required=True, help_text='Requerido. Introduce una dirección de correo válida.')
     
-    password = forms.CharField(
+    # Cambiar password por password1
+    password1 = forms.CharField(
         label="Contraseña", 
         strip=False,
         widget=PasswordInput(attrs={"autocomplete": "new-password"}),
@@ -19,6 +20,14 @@ class UserRegisterForm(UserCreationForm):
             "<li>Su contraseña no puede ser completamente numérica.</li>"
             "</ul>"
         ),
+    )
+    
+    # Añadir campo password2
+    password2 = forms.CharField(
+        label="Confirmar contraseña",
+        widget=PasswordInput(attrs={"autocomplete": "new-password"}),
+        strip=False,
+        help_text="Introduce la misma contraseña que antes, para verificación."
     )
 
     class Meta(UserCreationForm.Meta):
