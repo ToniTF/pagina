@@ -7,6 +7,7 @@ from .models import Post, Categoria, Comentario
 from .forms import PostForm, ComentarioForm, CategoriaForm, UserRegisterForm
 import feedparser  # Importa la librería
 import logging  # Para registrar errores si un feed falla
+from urllib.parse import urlencode  # Importar urlencode
 
 logger = logging.getLogger(__name__)
 
@@ -134,6 +135,30 @@ def detalle_post(request, slug):
         publicado=True
     ).exclude(id=post.id)[:3]
 
+    # --- INICIO: Preparar datos para compartir ---
+    # Obtener la URL absoluta del post
+    try:
+        absolute_url = request.build_absolute_uri(post.get_absolute_url())
+    except AttributeError:
+        # Fallback por si get_absolute_url no existe o falla
+        absolute_url = request.build_absolute_uri(reverse('app1:detalle_post', kwargs={'slug': post.slug}))
+
+    # Preparar texto y URLs codificadas
+    share_text = post.titulo
+    encoded_url = urlencode({'': absolute_url})[1:]
+    encoded_title = urlencode({'': share_text})[1:]
+    encoded_text_whatsapp = urlencode({'': f"{share_text} {absolute_url}"})[1:]
+    encoded_text_email_body = urlencode({'': f"Echa un vistazo a este artículo:\n\n{share_text}\n{absolute_url}"})[1:]
+
+    share_urls = {
+        'whatsapp': f"https://wa.me/?text={encoded_text_whatsapp}",
+        'email': f"mailto:?subject={encoded_title}&body={encoded_text_email_body}",
+        'twitter': f"https://twitter.com/intent/tweet?url={encoded_url}&text={encoded_title}",
+        'facebook': f"https://www.facebook.com/sharer/sharer.php?u={encoded_url}",
+        'copy_url': absolute_url  # URL para el botón de copiar
+    }
+    # --- FIN: Preparar datos para compartir ---
+
     # Formulario de comentarios
     if request.method == 'POST' and request.user.is_authenticated:
         comentario_form = ComentarioForm(request.POST)
@@ -152,6 +177,7 @@ def detalle_post(request, slug):
         'comentarios': comentarios,
         'comentario_form': comentario_form,
         'posts_relacionados': posts_relacionados,
+        'share_urls': share_urls,  # Añadir URLs de compartir al contexto
     }
     return render(request, 'app1/detalle_post.html', context)
 
