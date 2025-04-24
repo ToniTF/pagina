@@ -3,6 +3,30 @@
 
 {% block title %}{% if post %}Editar artículo{% else %}Nuevo artículo{% endif %}{% endblock %}
 
+{# Añadir CSS específico para CKEditor #}
+{% block extra_head %}
+<style>
+    /* Asegura que la etiqueta ocupe todo el ancho */
+    label[for="id_contenido"] { 
+        display: block;
+        width: 100%;
+    }
+    /* Fuerza al contenedor del widget CKEditor a ser un bloque */
+    /* El selector puede variar ligeramente, inspecciona si no funciona */
+    .django-ckeditor-widget { 
+        display: block !important; /* Usa !important si es necesario para sobrescribir */
+        width: 100%;
+        clear: both; /* Asegura que no flote al lado de nada */
+    }
+    /* O intenta apuntar por ID si el anterior no funciona */
+    /* #cke_id_contenido { 
+        display: block !important;
+        width: 100%;
+        clear: both;
+    } */
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container my-5">
     <div class="row justify-content-center">
@@ -67,8 +91,7 @@
 
                         <div class="mb-3">
                             <label for="{{ form.contenido.id_for_label }}" class="form-label">{{ form.contenido.label }}</label>
-                             {# Asume que el widget de contenido ya tiene las clases necesarias o usa un widget específico #}
-                            {{ form.contenido }}
+                            {{ form.contenido }} {# CKEditor reemplazará esto #}
                              {% if form.contenido.errors %}
                                 <div class="text-danger small mt-1">
                                     {% for error in form.contenido.errors %} {{ error }} {% endfor %}
