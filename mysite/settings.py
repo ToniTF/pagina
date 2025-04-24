@@ -140,9 +140,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CKEDITOR_UPLOAD_PATH = 'uploads/'
 CKEDITOR_CONFIGS = {
     'default': {
-        'toolbar': 'Full',
+        'toolbar': 'full',  # O tu configuración de barra de herramientas
         'height': 300,
         'width': '100%',
+        # --- AÑADE ESTA LÍNEA PARA QUITAR LA BARRA DE RUTA ---
+        'removePlugins': 'elementspath',
+        # ----------------------------------------------------
     },
 }
 
