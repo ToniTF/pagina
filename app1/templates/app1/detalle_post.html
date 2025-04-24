@@ -97,7 +97,17 @@
                                 <form method="post">
                                     {% csrf_token %}
                                     <fieldset class="form-group">
-                                        {{ comentario_form.as_p }}
+                                        {# --- INICIO: Renderizado manual del campo contenido --- #}
+                                        <div class="mb-3">
+                                            <label for="{{ comentario_form.contenido.id_for_label }}" class="form-label">{{ comentario_form.contenido.label }}</label>
+                                            {# Añadimos la clase form-control al widget textarea #}
+                                            {{ comentario_form.contenido.errors }}
+                                            {{ comentario_form.contenido }}
+                                            {% if comentario_form.contenido.help_text %}
+                                                <div class="form-text">{{ comentario_form.contenido.help_text|safe }}</div>
+                                            {% endif %}
+                                        </div>
+                                        {# --- FIN: Renderizado manual del campo contenido --- #}
                                     </fieldset>
                                     <div class="d-grid gap-2">
                                         <button type="submit" class="btn btn-primary mt-2">Enviar Comentario</button>
