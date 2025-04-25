@@ -38,16 +38,24 @@
                 </ul>
                 <div class="navbar-nav">
                     {% if user.is_authenticated %}
-                    <span class="nav-item nav-link text-light">
-                        <i class="bi bi-person-circle me-1"></i>{{ user.username }}
-                    </span>
-                    <form method="post" action="{% url 'logout' %}" class="d-inline">
-                        {% csrf_token %}
-                        <button type="submit" class="nav-link btn btn-link text-secondary">Cerrar sesión</button>
-                    </form>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownUserLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle me-1"></i>{{ user.username }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownUserLink">
+                            <li><a class="dropdown-item" href="{% url 'app1:edit_profile' %}">Editar Perfil</a></li>
+                            <li><a class="dropdown-item" href="{% url 'password_change' %}">Cambiar Contraseña</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form method="post" action="{% url 'logout' %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item">Cerrar sesión</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
                     {% else %}
                     <a class="nav-link" href="{% url 'login' %}">Iniciar sesión</a>
-                    <!-- Mantener 'register' sin namespace, ya que está definido en mysite/urls.py -->
                     <a class="nav-link" href="{% url 'register' %}">Registrarse</a>
                     {% endif %}
                 </div>

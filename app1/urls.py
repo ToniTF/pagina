@@ -12,5 +12,5 @@ urlpatterns = [
     path('post/<slug:slug>/editar/', views.editar_post, name='editar_post'),
     path('post/<slug:slug>/eliminar/', views.eliminar_post, name='eliminar_post'),
     path('mis-posts/', views.mis_posts, name='mis_posts'),
-   
+    path('perfil/editar/', views.edit_profile, name='edit_profile'),
 ]

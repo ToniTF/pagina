@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.forms import PasswordInput
 from django.contrib.auth.models import User
 from .models import Post, Comentario, Categoria
@@ -69,3 +69,32 @@ class ComentarioForm(forms.ModelForm):
         labels = {
             'contenido': 'Tu comentario',
         }
+
+# --- NUEVO FORMULARIO PARA EDITAR PERFIL ---
+class UserProfileForm(UserChangeForm):
+    # Quitar el campo de contraseña del formulario de cambio de usuario estándar
+    password = None 
+
+    class Meta:
+        model = User
+        # Campos que el usuario podrá editar
+        fields = ('username', 'email', 'first_name', 'last_name') 
+        # Opcional: Añadir widgets si quieres personalizar la apariencia
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+        # Opcional: Cambiar etiquetas si lo deseas
+        labels = {
+            'username': 'Nombre de usuario',
+            'email': 'Correo electrónico',
+            'first_name': 'Nombre',
+            'last_name': 'Apellidos',
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Opcional: Puedes deshabilitar el campo username si no quieres que lo cambien
+        # self.fields['username'].disabled = True

@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.db.models import Count, Q
 from django.core.paginator import Paginator
 from .models import Post, Categoria, Comentario
-from .forms import PostForm, ComentarioForm, CategoriaForm, UserRegisterForm
+from .forms import PostForm, ComentarioForm, CategoriaForm, UserRegisterForm, UserProfileForm
 import feedparser  # Importa la librería
 import logging  # Para registrar errores si un feed falla
 from urllib.parse import urlencode  # Importar urlencode
@@ -103,6 +103,29 @@ def register(request):
     else:
         form = UserRegisterForm()
     return render(request, 'app1/register.html', {'form': form})
+
+
+@login_required # Asegura que solo usuarios logueados puedan acceder
+def edit_profile(request):
+    if request.method == 'POST':
+        # Pasar request.POST y la instancia del usuario actual al formulario
+        form = UserProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save() # Guarda los cambios en el usuario
+            messages.success(request, '¡Tu perfil ha sido actualizado correctamente!')
+            # Redirigir a la misma página o a otra (ej. home)
+            return redirect('app1:edit_profile') 
+        else:
+            # Si el formulario no es válido, se mostrarán los errores en la plantilla
+            messages.error(request, 'Por favor, corrige los errores indicados.')
+    else:
+        # Para GET, mostrar el formulario con los datos actuales del usuario
+        form = UserProfileForm(instance=request.user)
+
+    context = {
+        'form': form
+    }
+    return render(request, 'app1/edit_profile.html', context)
 
 
 def lista_posts(request):

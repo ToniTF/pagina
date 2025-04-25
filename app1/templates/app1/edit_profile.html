@@ -1,0 +1,112 @@
+{% extends "app1/base.html" %}
+
+{% block title %}Editar mi Perfil{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6"> {# Ajusta el ancho si es necesario #}
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white text-center">
+                    <h3 class="mb-0">Editar mi Perfil</h3>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger py-2">
+                                {% for error in form.non_field_errors %}
+                                    <p class="mb-0">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% elif form.errors and not form.non_field_errors %}
+                             <div class="alert alert-warning py-2">
+                                Por favor, revisa los campos marcados.
+                            </div>
+                        {% endif %}
+
+                        {# Renderizar campos manualmente o usar crispy-forms si está instalado #}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">{{ form.username.label }}</label>
+                            <input type="{{ form.username.field.widget.input_type }}" 
+                                   name="{{ form.username.name }}" 
+                                   id="{{ form.username.id_for_label }}" 
+                                   class="form-control {% if form.username.errors %}is-invalid{% endif %}" 
+                                   value="{{ form.username.value|default:'' }}" 
+                                   {% if form.username.field.disabled %}disabled{% endif %} {# Añadir si deshabilitaste el username #}
+                                   required>
+                            {% if form.username.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.username.errors %} {{ error }} {% endfor %}
+                                </div>
+                            {% endif %}
+                            {% if form.username.help_text %}
+                                <small class="form-text text-muted">{{ form.username.help_text|safe }}</small>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">{{ form.email.label }}</label>
+                            <input type="email" 
+                                   name="{{ form.email.name }}" 
+                                   id="{{ form.email.id_for_label }}" 
+                                   class="form-control {% if form.email.errors %}is-invalid{% endif %}" 
+                                   value="{{ form.email.value|default:'' }}" 
+                                   required>
+                            {% if form.email.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.email.errors %} {{ error }} {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.first_name.id_for_label }}" class="form-label">{{ form.first_name.label }}</label>
+                            <input type="{{ form.first_name.field.widget.input_type }}" 
+                                   name="{{ form.first_name.name }}" 
+                                   id="{{ form.first_name.id_for_label }}" 
+                                   class="form-control {% if form.first_name.errors %}is-invalid{% endif %}" 
+                                   value="{{ form.first_name.value|default:'' }}">
+                            {% if form.first_name.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.first_name.errors %} {{ error }} {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="{{ form.last_name.id_for_label }}" class="form-label">{{ form.last_name.label }}</label>
+                            <input type="{{ form.last_name.field.widget.input_type }}" 
+                                   name="{{ form.last_name.name }}" 
+                                   id="{{ form.last_name.id_for_label }}" 
+                                   class="form-control {% if form.last_name.errors %}is-invalid{% endif %}" 
+                                   value="{{ form.last_name.value|default:'' }}">
+                            {% if form.last_name.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.last_name.errors %} {{ error }} {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <hr>
+
+                        <div class="d-grid gap-2 mt-4"> {# Botón ocupa todo el ancho #}
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save me-1"></i> Guardar Cambios
+                            </button>
+                        </div>
+                        
+                        {# Opcional: Enlace para cambiar contraseña (usa las vistas de auth de Django) #}
+                        <div class="text-center mt-3">
+                             <a href="{% url 'password_change' %}">Cambiar mi contraseña</a>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
