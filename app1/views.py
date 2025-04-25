@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.core.paginator import Paginator
 from .models import Post, Categoria, Comentario
 from .forms import PostForm, ComentarioForm, CategoriaForm, UserRegisterForm
@@ -64,14 +64,21 @@ def get_rss_news():
 
 
 def home(request):
-    # Posts destacados para el carrusel
-    posts_destacados = Post.objects.filter(destacado=True, publicado=True)[:5]
+    # Posts destacados por número de comentarios activos Y LUEGO por fecha
+    posts_destacados = Post.objects.filter(
+        publicado=True
+    ).annotate(
+        num_comentarios_activos=Count('comentarios', filter=Q(comentarios__activo=True))
+    ).order_by(
+        '-num_comentarios_activos', # 1. Más comentarios activos primero
+        '-fecha_publicacion'       # 2. Si hay empate, el más reciente primero
+    )[:5]
 
     # Posts recientes
-    posts_recientes = Post.objects.filter(publicado=True)[:6]
+    posts_recientes = Post.objects.filter(publicado=True).order_by('-fecha_publicacion')[:6]
 
     # Categorías populares
-    categorias = Categoria.objects.annotate(num_posts=Count('posts')).order_by('-num_posts')[:5]
+    categorias = Categoria.objects.annotate(num_posts=Count('posts', filter=Q(posts__publicado=True))).order_by('-num_posts')[:5]
 
     # Obtener noticias RSS
     noticias_rss = get_rss_news()
