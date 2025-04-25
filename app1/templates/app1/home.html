@@ -29,9 +29,9 @@
                 {% else %}
                 <div class="d-block w-100 bg-secondary" style="height: 400px;"></div> {# Placeholder si no hay imagen #}
                 {% endif %}
-                <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 p-3 rounded">
+                <div class="carousel-caption bg-dark bg-opacity-50 p-3 rounded">
                     <h5><a href="{% url 'app1:detalle_post' post.slug %}" class="text-white text-decoration-none">{{ post.titulo }}</a></h5>
-                    <p>{{ post.extracto|truncatechars:100 }}</p>
+                    <p class="d-none d-md-block">{{ post.extracto|truncatechars:100 }}</p>
                 </div>
             </div>
             {% endfor %}
